@@ -9,44 +9,52 @@ import (
 var digits = [9]string{"one", "two", "three", "four", "five", "six", "seven", "eight", "nine"}
 
 type DigitsInLine struct {
-	first int
-	last int
-	firstIndex int
-	lastIndex int
+	First      int
+	Last       int
+	FirstIndex int
+	LastIndex  int
 }
 
-func FindDigitsInLine(line string) (DigitsInLine, error) {	
-	var foundDigits DigitsInLine
+func FindDigitsInLine(line string) (*DigitsInLine, error) {
+	foundDigits := &DigitsInLine{}
 
-	// Find the digit that exists first in the line
+	// Find the digit that exists First in the line
 	for i := range digits {
-		// the temp index is the first index of the string where a match has occurred
-		tempIndex := strings.Index(line, digits[i])
+		// the temp index is the First index of the string where a match has occurred
+		firstIndex := strings.Index(line, digits[i])
+		lastIndex := strings.LastIndex(line, digits[i])
 		// pass, digit not found
-		if tempIndex == -1 {
+		if firstIndex == -1 || lastIndex == -1 {
 			continue
 		}
 
-		// set the found digit only if it hasn't been set yet
-		if foundDigits.first == 0 && foundDigits.firstIndex == 0 {
-			foundDigits.first= i + 1
-			foundDigits.firstIndex = tempIndex
-			foundDigits.last = i + 1
-			foundDigits.lastIndex = tempIndex
-			continue
+		if foundDigits.First == 0 || foundDigits.Last == 0 {
+
+			// set the found digit only if it hasn't been set yet
+			if foundDigits.First == 0 && foundDigits.FirstIndex == 0 {
+				foundDigits.First = i + 1
+				foundDigits.FirstIndex = firstIndex
+			}
+
+			// set the last found digit if it hasn't been set yet
+			if foundDigits.Last == 0 && foundDigits.LastIndex == 0 {
+				foundDigits.Last = i + 1
+				foundDigits.LastIndex = firstIndex
+			}
+
 		}
 
 		// the found digit is earlier in the list, set it as the output index
-		if tempIndex < foundDigits.firstIndex {
-			foundDigits.firstIndex = tempIndex
+		if firstIndex < foundDigits.FirstIndex {
+			foundDigits.FirstIndex = firstIndex
 			// set a found digit
-			foundDigits.first = i + 1
+			foundDigits.First = i + 1
 		}
 
 		// the found digit is later in the string, set it as the output last index
-		if tempIndex > foundDigits.lastIndex {
-			foundDigits.lastIndex = tempIndex
-			foundDigits.last = i + 1
+		if lastIndex > foundDigits.LastIndex {
+			foundDigits.LastIndex = lastIndex
+			foundDigits.Last = i + 1
 		}
 	}
 
@@ -69,13 +77,14 @@ func FindFirstAndLastInts(line string) (int, int, int, int) {
 			firstInt = charInt
 			firstIntIndex = i
 			lastInt = charInt
+			lastIntIndex = i
 			continue
 		}
 		lastInt = charInt
 		lastIntIndex = i
 	}
 
-	fmt.Println(firstInt)
-	fmt.Println(lastInt)
+	fmt.Printf("First Int: %v \n", firstInt)
+	fmt.Printf("Last Int: %v \n", lastInt)
 	return firstInt, firstIntIndex, lastInt, lastIntIndex
 }

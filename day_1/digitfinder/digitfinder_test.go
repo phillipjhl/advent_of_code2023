@@ -7,18 +7,22 @@ import (
 
 func TestFindDigits(t *testing.T) {
 	line1 := "1asdfone3fivefour"
-	wantFirst := 1
+	line2 := "72mmjrfjvlzone3threethreesix"
+	given := [2]string{line1, line2}
+	expected := 1
+	expectedLast := [2]int{4, 6}
 
-	foundDigits, _ := FindDigitsInLine(line1)
+	for i := range given {
+		foundDigits, _ := FindDigitsInLine(given[i])
 
-	fmt.Println(foundDigits.first)
+		fmt.Printf("Found Digits %v, of given: %v \n", foundDigits, given[i])
 
-	if foundDigits.first != wantFirst {
-		t.Fatalf(`findDigitsInLine(%v) = %v want %v`, line1, foundDigits.first, wantFirst)
-	}
+		if foundDigits.First != expected {
+			t.Fatalf(`findDigitsInLine(%v) = %v want %v`, given[i], foundDigits.First, expected)
+		}
 
-	wantLast := 4
-	if foundDigits.last != wantLast {
-		t.Fatalf(`findDigitsInLine(%v) = %v want %v`, line1, foundDigits.last, wantLast)
+		if foundDigits.Last != expectedLast[i] {
+			t.Fatalf(`findDigitsInLine(%v) = %v want %v`, given[i], foundDigits.Last, expectedLast[i])
+		}
 	}
 }

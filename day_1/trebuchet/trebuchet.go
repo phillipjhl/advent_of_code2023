@@ -31,7 +31,7 @@ func main() {
 		fmt.Println(line)
 
 		// slice to hold the first and last found digits in the line
-		var digitsFoundInLine = make([]string, 2)
+		var digitsFoundInLine = make([]int, 2)
 
 		// loops over each line to the first and last integer characters
 		firstInt, firstIntIndex, lastInt, lastIntIndex := digitfinder.FindFirstAndLastInts(line)
@@ -40,33 +40,47 @@ func main() {
 		foundDigits, err := digitfinder.FindDigitsInLine(line)
 
 		// int was not found
-		if firstIntIndex == 0 {
-			// set first digit
-			digitsFoundInLine[0] = foundDigits.first
-		} else {
-			if firstIntIndex > foundDigits.firstIndex {
-				digitsFoundInLine[0] = foundDigits.first
+		if firstInt == 0 && foundDigits.First == 0 {
+			// do nothing
+		} else if firstInt != 0 && foundDigits.First == 0 {
+		// use int as it's the only option
+			digitsFoundInLine[0] = firstInt
+		} else if foundDigits.First != 0 && firstInt == 0 {
+		// use digits as it's the only option
+			digitsFoundInLine[0] = foundDigits.First
+		}  else {
+			if firstIntIndex > foundDigits.FirstIndex {
+				digitsFoundInLine[0] = foundDigits.First
 			} else {
-				strA := strconv.Itoa(firstInt)
-				digitsFoundInLine[0] = strA
+				// strA := strconv.Itoa(firstInt)
+				digitsFoundInLine[0] = firstInt
 			}
 		}
-		// int was not found
-		if lastIntIndex == 0 {
+		// neither int or digit was not found
+		if lastInt == 0 && foundDigits.Last == 0 {
 			// set last digit
-			digitsFoundInLine[1] = foundDigits.last
+			digitsFoundInLine[1] = digitsFoundInLine[0]
+		} else if lastInt != 0 && foundDigits.Last == 0 {
+		// use int as it's the only option
+			digitsFoundInLine[1] = lastInt
+		} else if foundDigits.Last != 0 && lastInt == 0 {
+		// use digits as it's the only option
+			digitsFoundInLine[1] = foundDigits.Last
 		} else {
-			if lastIntIndex > foundDigits.lastIndex {
-				digitsFoundInLine[1] = foundDigits.last
+			fmt.Printf("dg: %v \n", foundDigits)
+			fmt.Printf("li: %v \n", lastIntIndex)
+			if lastIntIndex > foundDigits.LastIndex {
+				digitsFoundInLine[1] = lastInt
 			} else {
-				strB := strconv.Itoa(lastInt)
-				digitsFoundInLine[1] = strB
+				// strB := strconv.Itoa(lastInt)
+				digitsFoundInLine[1] = foundDigits.Last
 			}
 		}
 
 		// conjoin the two digits to get the final result of the line
 		fmt.Printf("DigitsSlice: %v \n", digitsFoundInLine)
-		lineString := digitsFoundInLine[0] + digitsFoundInLine[1]
+		var lineString string
+		lineString = strconv.Itoa(digitsFoundInLine[0]) + strconv.Itoa(digitsFoundInLine[1])
 		fmt.Printf("LineAsString: %s \n", lineString)
 		lineInt, err := strconv.Atoi(lineString)
 		if err != nil {
@@ -75,6 +89,8 @@ func main() {
 
 		fmt.Printf("Line Int: %v \n ", lineInt)
 		sum = sum + lineInt
+
+		fmt.Println("---")
 	}
 
 	fmt.Println("Sum: ", sum)
