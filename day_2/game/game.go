@@ -13,6 +13,7 @@ func main() {
 	file, err := os.Open(file_path)
     var	RuleMap = map[string]int{"red": 12, "green": 13, "blue": 14}
 	var sumOfTotalGameIds int = 0
+	var totalSumOfGamePower int = 0
 
 	if err != nil {
 		fmt.Println("Error opening file")
@@ -29,6 +30,9 @@ func main() {
 		line = line[5:]
 		var gameID string
 		var impossibleFlag int = 0
+		// store a map of the maximum count of each color
+		var maxCountMap = map[string]int{"red": 0, "green": 0, "blue": 0}
+		var gamePower int = 0
 
 		// loop over line to find the game id 
 		for i := 0; i <= len(line)-1; i++ {
@@ -45,7 +49,6 @@ func main() {
 		// fmt.Println(listOfMatches)
 		// loop over each match in the line
 		for _, match := range listOfMatches {
-			// fmt.Println(match)
 			// strip the ";" from the match if it exists
 			trimmedMatch := strings.TrimSuffix(match, ";")
 			trimmedMatch = strings.TrimSpace(trimmedMatch)
@@ -57,6 +60,7 @@ func main() {
 			for _, score := range scores {
 				score = strings.TrimSpace(score)
 				scoreTuple := strings.Split(score, " ")
+				// Ex: [ 3, red ]
 
 				cubeColor := scoreTuple[1]
 				scoreInt, err := strconv.Atoi(scoreTuple[0])
@@ -64,6 +68,12 @@ func main() {
 					fmt.Println("Error converting score to int")
 					return
 				}
+
+				// check the latest max count for the color and update it if higher
+				if scoreInt > maxCountMap[cubeColor] {
+					maxCountMap[cubeColor] = scoreInt
+				}
+
 				for key, limit := range RuleMap {
 					if  cubeColor == key && scoreInt > limit {
 						fmt.Printf("Num Invalid for Game ID: %v, %v for %v over limit: %v \n", gameID, scoreInt, key, limit)
@@ -74,6 +84,9 @@ func main() {
 				}
 			}
 		}
+
+		gamePower = maxCountMap["red"] * maxCountMap["green"] * maxCountMap["blue"]
+		totalSumOfGamePower += gamePower
 
 		if impossibleFlag == 0 {
 			gameIDInt, err := strconv.Atoi(gameID)
@@ -87,4 +100,5 @@ func main() {
 	}
 
 	fmt.Println("Total Sum of valid Game IDs: ", sumOfTotalGameIds)
+	fmt.Println("Total Sum of All Game PowersL ", totalSumOfGamePower)
 }
