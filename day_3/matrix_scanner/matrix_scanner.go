@@ -17,25 +17,35 @@ func main() {
 	}
 	defer file.Close()
 
+    // line count, indexed at 0
+	var matrixRow int = 0
+	// matrix to hold all chars
+	var matrix [][]byte
+
 	// Create a scanner to read the file
 	scanner := bufio.NewScanner(file)
 	for scanner.Scan() {
 		line := scanner.Bytes()
 		fmt.Printf("Length: %d\n", len(line))
 		fmt.Println(line)
+		var row []byte
 
-		// find the location of each symbol in the line and store it in a map
+		// find the location of each symbol in the line and store the matrix loc in a map
 		// a symbol can appear multiple times in a line and is not a "." and is not an int
-		symbolMap := make(map[byte][]int)
 		for i := 0; i < len(line); i++ {
-			if line[i] != '.' && line[i] < '0' || line[i] > '9' {
-				symbolMap[line[i]] = append(symbolMap[line[i]], i)
+			if line[i] != '.' && line[i] > '0' || line[i] <= '9' {
+				row = append(row, line[i])
 			}
 		}
 
-		fmt.Println(symbolMap)
+		matrix = append(matrix, row)
+		// count matrixRow
+		matrixRow ++
 	}
 	if err := scanner.Err(); err != nil {
 		fmt.Println("Error: %v", err)
 	}
+
+
+	fmt.Println(matrix)
 }
